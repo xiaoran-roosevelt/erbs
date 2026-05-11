@@ -1,0 +1,28 @@
+/* 二百四 — 全局主题变量 */
+page {
+  --bg: #0c0e13;
+  --s1: #13161f;
+  --s2: #1a1e2a;
+  --s3: #252a3a;
+  --b1: rgba(255, 255, 255, .07);
+  --b2: rgba(255, 255, 255, .14);
+  --blue: #5b9bd5;
+  --blue2: #3a7abf;
+  --red: #e05a5a;
+  --gold: #d4a843;
+  --gold2: #a07828;
+  --green: #52c27a;
+  --t1: #edf0f7;
+  --t2: #8a91a8;
+  --t3: #3a3f55;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 通用工具 */
+.hide { display: none !important; }

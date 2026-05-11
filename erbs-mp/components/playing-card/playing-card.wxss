@@ -1,0 +1,87 @@
+/* playing-card 组件样式 */
+.card {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 7rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, .45);
+  transition: transform .15s cubic-bezier(.34, 1.56, .64, 1), box-shadow .15s;
+}
+
+/* ── 四种尺寸 ── */
+.card.large.portrait { width: 76rpx; height: 108rpx; }
+.card.medium.portrait { width: 64rpx; height: 92rpx; }
+.card.small.portrait { width: 32rpx; height: 48rpx; }
+.card.small.landscape { width: 48rpx; height: 32rpx; }
+
+/* 正面白色底 */
+.card:not(.back) { background: #fff; border: 1px solid rgba(0, 0, 0, .15); }
+
+/* 背面样式 */
+.card.back {
+  background: linear-gradient(135deg, #181d30, #212640);
+  cursor: default;
+}
+.card.back::after {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  inset: 3rpx;
+  border: 1px solid rgba(255, 255, 255, .05);
+  border-radius: 4rpx;
+}
+
+/* 选中高亮 */
+.card.sel {
+  transform: translateY(-32rpx) !important;
+  box-shadow: 0 0 0 3rpx var(--blue), 0 14rpx 24rpx rgba(91, 155, 213, .3) !important;
+  z-index: 6;
+}
+
+/* 提示高亮 */
+.card.hint-hl {
+  box-shadow: 0 0 0 3rpx var(--gold), 0 6rpx 16rpx rgba(212, 168, 67, .3) !important;
+}
+
+/* ── 牌面文字布局 ── */
+.cc {
+  position: absolute;
+  top: 2rpx;
+  left: 3rpx;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ccb {
+  top: auto; bottom: 2rpx; left: auto; right: 3rpx;
+  transform: rotate(180deg);
+}
+
+.large .cr { font-size: 24rpx; font-weight: 800; }
+.large .cs { font-size: 16rpx; }
+.large .cct { font-size: 34rpx; }
+
+.medium .cr { font-size: 20rpx; font-weight: 800; }
+.medium .cs { font-size: 14rpx; }
+.medium .cct { font-size: 28rpx; }
+
+.small .cr { font-size: 10rpx; }
+.small .cs { font-size: 6rpx; }
+
+.cct {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.cred { color: #dc2626; }
+.cblk { color: #111; }
+
+.jtag { font-size: 10rpx; font-weight: 900; letter-spacing: 1rpx; }
+.small .jtag { font-size: 6rpx; }
+
+/* 发牌动画 */
+@keyframes dealIn {
+  from { opacity: 0; transform: translateY(-40rpx) scale(.85); }
+  to { opacity: 1; transform: none; }
+}
+.dealing { animation: dealIn .16s ease-out forwards; }

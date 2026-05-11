@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "playing-card": "../../components/playing-card/playing-card"
+  },
+  "navigationStyle": "custom",
+  "disableScroll": true
+}

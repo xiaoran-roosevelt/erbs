@@ -1,0 +1,28 @@
+<view
+  class="card {{size}} {{orientation}} {{faceUp ? '' : 'back'}} {{selected ? 'sel' : ''}} {{hintHighlight ? 'hint-hl' : ''}}"
+  bindtap="onTap"
+>
+  <block wx:if="{{faceUp && card}}">
+    <block wx:if="{{card.joker}}">
+      <view class="cc {{colorClass}}">
+        <text class="cr">{{rankUpper}}</text>
+        <text class="jtag">王</text>
+      </view>
+      <view class="cct">{{suitDisplay}}</view>
+      <view class="cc ccb {{colorClass}}">
+        <text class="cr">{{rankLower}}</text>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="cc {{colorClass}}">
+        <text class="cr">{{rankUpper}}</text>
+        <text class="cs">{{suitDisplay}}</text>
+      </view>
+      <view class="cct {{colorClass}}">{{suitDisplay}}</view>
+      <view class="cc ccb {{colorClass}}">
+        <text class="cr">{{rankLower}}</text>
+        <text class="cs">{{suitDisplay}}</text>
+      </view>
+    </block>
+  </block>
+</view>

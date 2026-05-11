@@ -4,65 +4,71 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-《二百四》是一个四人捡分制扑克牌游戏，单文件实现（`erbs.html`），纯前端，无框架，无构建工具。人类玩家 vs 3 个 AI。
+《二百四》是一个四人捡分制扑克牌游戏，微信小程序实现。人类玩家 vs 3 个 AI。
+
+> 原网页版（`erbs.html`）已归档于 git tag `v0.1-web`。
 
 ## 如何运行
 
-直接在浏览器中打开 `erbs.html`。无需服务器、无需安装依赖。
+在微信开发者工具中打开项目根目录，编译运行即可。无需安装依赖。
+
+## 项目结构
+
+```
+├── app.js / app.json / app.wxss   # 小程序入口、配置、全局样式
+├── project.config.json            # 开发者工具配置
+├── pages/game/                    # 主页面（单页，phase 切换 lobby/game/end）
+│   ├── game.js                    # 页面逻辑（状态管理 + 生命周期 + 游戏流程）
+│   ├── game.wxml                  # WXML 模板
+│   └── game.wxss                  # 页面样式（rpx 手机适配）
+├── components/playing-card/       # 卡牌自定义组件（四种尺寸、正/背面、选中/提示态）
+├── utils/
+│   ├── game-logic.js              # 纯游戏逻辑（19个导出函数，无副作用）
+│   └── audio.js                   # WAV 数据 URI 音效（替代 Web Audio API）
+```
 
 ## 游戏规则概要
 
-- **牌组**：两副标准扑克牌（去掉 3/4/6），共 84 张。包含大王×2、小王×2、普通牌 80 张（A/2/5/7/8/9/10/J/Q/K 四花色各两张）
+- **牌组**：两副标准扑克牌（去掉 3/4/6），共 84 张。大王×2、小王×2、普通牌 80 张
 - **总分**：240 分。分牌：5=5分，10/K/王牌=10分
-- **阶段流程**：发牌 → 喊牌（有人拿到10时可喊副主花色）→ 反牌（其他人可用10对/王牌对反牌，改变副主或打正主）→ 出牌（同步出牌制，四人各出一手，胜者得分+领出下一轮）→ 结算
-- **牌型**：单张、对子、连队（连续rank的多个对子）。主牌（王牌+所有2+所有10+副主花色的普通牌）> 副主花色牌 > 其他花色
-- **出牌限制**：跟牌必须由同花色、同牌型、同对数的牌，否则为"填牌"（默认输，且不能主动出分值牌填）
-- **AI 策略**：简单贪心——有10必喊副主、能反必反、首出最大对子、跟牌优先同花色最大
+- **阶段流程**：发牌 → 喊牌（拿到10可喊副主花色）→ 反牌（10对/王牌对反牌）→ 出牌（同步制，四人各出一手，胜者得分+领出）→ 结算
+- **牌型**：单张、对子、连队。主牌 > 副主花色 > 其他花色
+- **AI 策略**：简单贪心——有10必喊、能反必反、首出最大对子、跟牌同花色最大
 
-## 代码架构（模块划分）
+## 数据流架构
 
-`erbs.html` 共约 1932 行，按 `// ━━` 注释分隔为 20 个模块：
+**两层状态分离**：
 
-| 模块 | 位置区域 | 功能 |
-|------|---------|------|
-| 一 | CSS 变量 + 通用布局 | 暗色主题配色、按钮系统、网格布局 |
-| 二 | 音效系统 | Web Audio API 合成音效（tone 函数 + SFX 集合） |
-| 三 | 牌组生成 | `makeDeck()` 生成84张牌，`shuffle()` Fisher-Yates 洗牌 |
-| 四 | 对子与连队检测 | `isPair()`, `findPairs()`, `findAllSeqs()` |
-| 五 | 牌型识别 | `getPlayType()` 识别 single/pair/fill 三种牌型 |
-| 六 | 出牌比较 | `comparePlay()` 按花色类别→rank→顺序比较 |
-| 七 | 手牌排序 | `sortHand()`：main > ♠ > ♥ > ♣ > ♦，同类别 rank 降序 |
-| 八 | 填牌辅助 | `pickFillN()`：按弃子优先级选填牌 |
-| 九 | AI 决策 | `aiShout/aiReverse/aiLead/aiFollow` 四个决策函数 |
-| 十 | 出牌验证 | `validatePlay()`：三步验证（同花色约束→对子约束→分值牌约束） |
-| 十一 | 游戏状态管理 | 全局 `G` 对象 + `startGame()` / `newRound()` 生命周期 |
-| 十二 | 发牌阶段 | `doDeals()` 逐张发牌，不暂停（喊牌面板实时更新） |
-| 十三 | 反牌阶段 | `enterReverse()` → 轮询 → `finishReverse()` |
-| 十四 | 出牌阶段 | 同步出牌制，逐人调度，`commitPlay()` 记录 |
-| 十五 | 子轮结算 | `resolveSubRound()` 比较+计分+胜者领下轮 |
-| 十六 | 提示系统 | `doHint()` 循环显示合法出牌 |
-| 十七 | 局结算 | `endRound()` 计算差值，高分者下局首出 |
-| 十八 | 渲染系统 | `mkCard()` 创建牌元素、手牌增量/全量渲染 |
-| 十九 | Toast 系统 | 浮动提示，支持金/红/绿三种语义颜色 |
-| 二十 | 结算界面 | 得分表 + 胜负 emoji + 再来一局/返回大厅 |
+- `this.G`（JS 内部，不在 data 中）— 权威游戏状态，含完整牌对象数组，高频变化
+- `this.data`（WXML 绑定）— 仅存展示数据（扁平化），通过 `setData` 增量更新
+
+**同步方法**：
+
+- `_syncMyHand()` — 重建 `myHand` 数组（含 selected/hintHighlight），每次选牌/提示时调用
+- `_syncPlayerInfo(seat)` — 路径更新单个玩家的 score/handCount/active
+- `_syncAllHands()` — 全量刷新（喊牌/反牌后调用）
+
+**游戏逻辑函数**（`utils/game-logic.js`）全部为纯函数，通过 `require` 引入，不涉及 `setData`。
 
 ## 关键数据结构
 
 - **牌对象**：`{ suit, rank, joker, jokerType, uid }`
-- **游戏状态 `G`**：包含 `phase`, `hands`, `sub`（副主花色）, `shouter`, `revBest`, `revWinner`, `leader`, `roundCat`, `roundType`, `scores` 等。使用 `Object.assign(G, {...})` 重置各局状态（保留 `highScore`）
-- **全局变量**：`cumScores`（跨局累积）, `roundNum`, `sel`（选中牌 uid 数组）, `hintList`
+- **游戏状态 `G`**：`phase`, `hands`, `sub`, `shouter`, `revBest`, `revWinner`, `leader`, `roundCat`, `roundType`, `scores` 等
+- **页面 data**：`players[]`（四人展示数据）、`myHand[]`（人类手牌）、`subPlays[]`（本轮出牌）、面板可见性标志
 
-## 核心函数
+## 手机布局要点
 
-- `cardRank(c, sub)` — 计算牌权值，有 sub 和 无 sub 两套权值表
-- `cardCat(c, sub)` — 判断花色类别（main / 具体花色）
-- `cardScore(c)` — 计算分值为 0/5/10
-- `getPlayType(cards, sub)` — 牌型识别 {type, cat, rank, len}
-- `validatePlay(cards, G)` — 人类出牌合法性验证（最复杂的验证逻辑）
+- 使用 `rpx` 单位（750rpx = 屏宽）
+- 人类手牌：76×108rpx，`<scroll-view scroll-x>` 水平滚动
+- AI 手牌：32×48rpx（顶部）/ 48×32rpx（左右），纯装饰背面
+- 中央出牌区：CSS Grid 2列布局
+- 面板（喊牌/反牌/操作栏）：绝对定位浮层
 
 ## 修改注意事项
 
-- 所有代码在一个文件中，CSS（行9-215）、HTML（行217-351）、JS（行352-1929）
-- HTML 使用内联 `onclick` 绑定事件处理器，不走事件委托
-- DOM 元素 ID 使用短命名（如 `z-top`, `pt-0`, `hc-2`），修改时注意 CSS 选择器同步
-- AI 决策全部是贪心策略，修改出牌逻辑需同时更新 `aiChoosePlay`, `aiLead`, `aiFollow`
+- 修改游戏规则只需改 `utils/game-logic.js`（纯逻辑）和必要时 `game.js`（流程控制）
+- 修改 UI 布局改 `game.wxml` + `game.wxss`
+- `playing-card` 组件被手牌区、出牌展示区等多处复用，改组件时注意兼容四种 size
+- AI 决策在 `game-logic.js` 中 `aiChoosePlay/aiLead/aiFollow`，全部贪心策略
+- 音效在首次播放时懒初始化（生成 WAV 数据 URI），之后缓存复用
+- 计时器在 `onHide` 时清理，避免后台累积

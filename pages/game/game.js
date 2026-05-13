@@ -77,7 +77,18 @@ Page({
   },
 
   onHide: function () {
-    this._clearTimers();
+    // 不清除发牌计时器，避免打断发牌链
+    if (this.cdTimer) { clearTimeout(this.cdTimer); this.cdTimer = null; }
+    if (this._syncTimer) { clearTimeout(this._syncTimer); this._syncTimer = null; }
+  },
+
+  onShow: function () {
+    // 如果发牌中断（切后台回来），恢复发牌
+    if (this.G && this.G.phase === 'deal' && !this.dealTimer) {
+      console.log('[onShow] 恢复发牌, dealIdx=' + this.G.dealIdx);
+      var self = this;
+      this.dealTimer = setTimeout(function () { self.doDeals(); }, 90);
+    }
   },
 
   onUnload: function () {
@@ -179,6 +190,7 @@ Page({
   // ══════════════════════════════════════════
 
   doDeals: function () {
+    console.log('[doDeals] dealIdx=' + this.G.dealIdx);
     if (this.G.dealIdx >= 84) { this.onDealDone(); return; }
 
     try {
@@ -210,7 +222,7 @@ Page({
         this._refreshShoutPanel();
       }
     } catch (e) {
-      // 发牌出错不中断，继续下一张
+      console.error('[doDeals] 发牌出错:', e);
     }
 
     var self = this;
@@ -479,11 +491,17 @@ Page({
   doPlay: function () {
     if (!this.sel.length) { this.toast('请先选牌', 'tred'); return; }
     var hand = this.G.hands[0];
-    var cards = this.sel.map(function (uid) { return hand.find(function (c) { return c.uid === uid; }); }).filter(Boolean);
+    var cards = this.sel.map(function (uid) {
+      for (var i = 0; i < hand.length; i++) { if (hand[i].uid === uid) return hand[i]; }
+      return null;
+    }).filter(Boolean);
 
     if (this.G.isLeader && this.G.mustLeadPair) {
       var pair = GLogic.getRevPairCards(hand, this.G.mustLeadPair);
-      if (pair && !pair.every(function (c) { return cards.find(function (x) { return x.uid === c.uid; }); })) {
+      if (pair && !pair.every(function (c) {
+        for (var i = 0; i < cards.length; i++) { if (cards[i].uid === c.uid) return true; }
+        return false;
+      })) {
         this.toast('首出必须包含反牌对子', 'tred'); this._shakeHand(); return;
       }
     }
@@ -657,7 +675,7 @@ Page({
       return {
         uid: c.uid, suit: c.suit, rank: c.rank, joker: c.joker, jokerType: c.jokerType,
         selected: this.sel.indexOf(c.uid) >= 0,
-        hintHighlight: !!(curHint && curHint.find(function (x) { return x.uid === c.uid; })),
+        hintHighlight: !!(curHint && curHint.some(function (x) { return x.uid === c.uid; })),
       };
     }.bind(this));
     this.setData({ myHand: myHand });
@@ -691,11 +709,20 @@ Page({
   },
 
   _addCardToHand: function (seat, card) {
-    // 在发牌过程中统一更新：人类更新 myHand，AI 更新 handCards
     if (seat === 0) {
-      this._syncMyHand();
+      // 合并为单次 setData，同时更新 myHand 和 handCount
+      var curHint = this.hintList.length ? this.hintList[(this.hintIdx - 1 + this.hintList.length) % this.hintList.length] : null;
+      var myHand = this.G.hands[0].map(function (c) {
+        return {
+          uid: c.uid, suit: c.suit, rank: c.rank, joker: c.joker, jokerType: c.jokerType,
+          selected: this.sel.indexOf(c.uid) >= 0,
+          hintHighlight: !!(curHint && curHint.some(function (x) { return x.uid === c.uid; })),
+        };
+      }.bind(this));
+      var upd = { myHand: myHand };
+      upd['players[0].handCount'] = this.G.hands[0].length;
+      this.setData(upd);
     } else {
-      // 增量更新 AI 手牌数组
       var handCards = this.data.players[seat].handCards.concat([
         { uid: card.uid, suit: card.suit, rank: card.rank, joker: card.joker }
       ]);
@@ -703,10 +730,6 @@ Page({
       updates['players[' + seat + '].handCards'] = handCards;
       updates['players[' + seat + '].handCount'] = this.G.hands[seat].length;
       this.setData(updates);
-    }
-    // 对于人类也更新计数
-    if (seat === 0) {
-      this.setData({ ['players[0].handCount']: this.G.hands[0].length });
     }
   },
 

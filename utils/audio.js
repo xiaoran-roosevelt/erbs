@@ -147,7 +147,7 @@ function initSounds() {
       ])
     );
   } catch (e) {
-    // 音效生成失败则静默，不阻塞游戏
+    console.error('[audio] 音效生成失败:', e);
     SFX_URIS = { _empty: true };
   }
 }
@@ -165,7 +165,7 @@ function playSfx(name) {
     ctx.onEnded(function () { ctx.destroy(); });
     ctx.onError(function () { ctx.destroy(); });
   } catch (e) {
-    // 静默失败
+    console.error('[audio] 播放音效失败:', name, e);
   }
 }
 

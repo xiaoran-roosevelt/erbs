@@ -12,6 +12,7 @@
 .card.medium.portrait { width: 64rpx; height: 92rpx; }
 .card.small.portrait { width: 32rpx; height: 48rpx; }
 .card.small.landscape { width: 48rpx; height: 32rpx; }
+.card.compact.portrait { width: 56rpx; height: 80rpx; }
 
 /* 正面白色底 */
 .card:not(.back) { background: #fff; border: 1px solid rgba(0, 0, 0, .15); }
@@ -64,6 +65,10 @@
 .medium .cr { font-size: 20rpx; font-weight: 800; }
 .medium .cs { font-size: 14rpx; }
 .medium .cct { font-size: 28rpx; }
+
+.compact .cr { font-size: 18rpx; font-weight: 800; }
+.compact .cs { font-size: 12rpx; }
+.compact .cct { font-size: 24rpx; }
 
 .small .cr { font-size: 10rpx; }
 .small .cs { font-size: 6rpx; }

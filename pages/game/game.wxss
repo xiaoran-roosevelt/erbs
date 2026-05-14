@@ -330,3 +330,163 @@
   #z-left, #z-right { width: 80rpx; }
   .ptag .pn { font-size: 18rpx; }
 }
+
+/* ══════════════════════════════════════════
+   横屏布局 (.landscape)
+   ══════════════════════════════════════════ */
+
+/* ── 顶栏 ── */
+.landscape #topbar {
+  padding: 2rpx 16rpx; height: 24rpx;
+}
+.landscape .gtitle { font-size: 18rpx; letter-spacing: 2rpx; }
+.landscape .chips { gap: 6rpx; }
+.landscape .chip { font-size: 16rpx; padding: 2rpx 10rpx; border-radius: 16rpx; }
+.landscape .chip .cv { font-size: 18rpx; }
+
+/* ── 游戏面板 ── */
+.landscape#game-board {
+  flex: 1; display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── middle-area ── */
+.landscape #middle-area {
+  display: flex; flex-direction: column;
+  flex: 1; min-height: 0;
+}
+
+/* ── AI 行 ── */
+#ai-row {
+  display: flex; flex-direction: row;
+  justify-content: space-around; align-items: center;
+  flex-shrink: 0;
+  padding: 2rpx 12rpx;
+  height: 44rpx;
+}
+.ai-slot {
+  display: flex; flex-direction: row;
+  align-items: center; gap: 6rpx;
+}
+.ai-slot .ptag {
+  padding: 2rpx 8rpx; gap: 4rpx;
+  border-radius: 14rpx;
+}
+.ai-slot .pn { font-size: 16rpx; }
+.ai-slot .ps { font-size: 14rpx; }
+.ai-slot .hcnt { font-size: 14rpx; padding: 1rpx 8rpx; }
+.ai-slot .tdot { width: 8rpx; height: 8rpx; }
+.ai-slot .rpill { font-size: 12rpx; padding: 1rpx 6rpx; }
+
+.ai-cards {
+  display: flex; flex-direction: row;
+}
+.ai-cards .card { margin-left: -28rpx; }
+.ai-cards .card:first-child { margin-left: 0; }
+
+/* ── 中央区 ── */
+.landscape #tcenter {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4rpx; position: relative;
+}
+.landscape #statusbar {
+  font-size: 18rpx; padding: 4rpx 16rpx;
+  min-width: auto; border-radius: 10rpx;
+}
+.landscape #round-plays {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 4rpx; width: 300rpx;
+}
+.landscape .rp-top { grid-column: 1; grid-row: 1; }
+.landscape .rp-right { grid-column: 2; grid-row: 1; }
+.landscape .rp-left { grid-column: 1; grid-row: 2; }
+.landscape .rp-bottom { grid-column: 2; grid-row: 2; }
+.landscape .rplay { min-height: 50rpx; padding: 1rpx; gap: 1rpx; }
+.landscape .rplay-pile .card { margin-left: -8rpx; }
+.landscape .rplay-meta { font-size: 14rpx; }
+.landscape .rplay.win-hl .rplay-pile .card {
+  box-shadow: 0 0 0 2rpx var(--gold), 0 4rpx 12rpx rgba(212, 168, 67, .4) !important;
+}
+
+/* ── 面板 ── */
+.landscape #shout-panel {
+  top: 30rpx; padding: 10rpx 16rpx;
+  min-width: 320rpx; gap: 8rpx;
+}
+.landscape .shout-lbl { font-size: 18rpx; }
+.landscape #countdown-bar {
+  bottom: auto; top: 8rpx;
+  font-size: 18rpx; padding: 4rpx 16rpx;
+}
+.landscape #rev-panel {
+  bottom: auto; top: 8rpx;
+  padding: 10rpx 16rpx; gap: 8rpx;
+}
+
+/* ── 人类信息栏 ── */
+#z-bottom-info {
+  display: flex; flex-direction: row;
+  align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+  padding: 2rpx 20rpx;
+  height: 26rpx;
+}
+#z-bottom-info .ptag {
+  padding: 2rpx 12rpx; gap: 6rpx;
+}
+#z-bottom-info .pn { font-size: 16rpx; }
+#z-bottom-info .ps { font-size: 14rpx; }
+#z-bottom-info .tdot { width: 8rpx; height: 8rpx; }
+#z-bottom-info .rpill { font-size: 12rpx; padding: 1rpx 6rpx; }
+
+/* ── 操作栏 ── */
+.landscape #action-bar {
+  padding: 0; gap: 8rpx;
+}
+.landscape #action-bar .btn {
+  padding: 6rpx 18rpx; font-size: 20rpx;
+  border-radius: 10rpx;
+}
+
+/* ── 手牌 ── */
+.landscape #hand-scroll {
+  flex-shrink: 0;
+  height: 150rpx;
+}
+.landscape #hand-bottom {
+  padding: 10rpx 16rpx;
+  align-items: flex-end;
+}
+.landscape #hand-bottom .card {
+  margin-left: -20rpx;
+}
+.landscape #hand-bottom .card:first-child {
+  margin-left: 0;
+}
+.landscape #hand-bottom .card.sel {
+  transform: translateY(-24rpx) !important;
+}
+
+/* ── Toast ── */
+.landscape #toasts { top: 40rpx; }
+.landscape .toast { font-size: 20rpx; padding: 6rpx 16rpx; }
+
+/* ── 结算界面 ── */
+.landscape .ebox {
+  width: 480rpx; padding: 28rpx 40rpx;
+  border-radius: 20rpx;
+}
+.landscape .eemoji { font-size: 48rpx; }
+.landscape .etitle { font-size: 28rpx; }
+.landscape .stbl th { font-size: 16rpx; padding: 6rpx; }
+.landscape .stbl td { font-size: 20rpx; padding: 8rpx 6rpx; }
+.landscape .eacts { gap: 10rpx; }
+.landscape .eacts .btn { padding: 12rpx 24rpx; font-size: 22rpx; }
+
+/* ── 大厅 ── */
+.landscape .lbox { padding: 32rpx 40rpx; width: 400rpx; }
+.landscape .logo .lt { font-size: 48rpx; }

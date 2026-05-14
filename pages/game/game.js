@@ -20,6 +20,7 @@ var SEAT_POS = { 0: 'rp-bottom', 1: 'rp-right', 2: 'rp-top', 3: 'rp-left' };
 Page({
   data: {
     phase: 'lobby',
+    isLandscape: false,
     subSuitDisplay: '正主',
     subSuitGold: false,
     roundNum: 1,
@@ -74,6 +75,8 @@ Page({
 
   onLoad: function () {
     this.G = this._makeG();
+    this._detectOrientation();
+    wx.setPageOrientation({ orientation: 'landscape' });
   },
 
   onHide: function () {
@@ -89,6 +92,15 @@ Page({
       var self = this;
       this.dealTimer = setTimeout(function () { self.doDeals(); }, 90);
     }
+  },
+
+  onResize: function (res) {
+    this.setData({ isLandscape: res.size.windowWidth > res.size.windowHeight });
+  },
+
+  _detectOrientation: function () {
+    var info = wx.getSystemInfoSync();
+    this.setData({ isLandscape: info.windowWidth > info.windowHeight });
   },
 
   onUnload: function () {

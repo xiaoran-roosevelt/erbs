@@ -1,5 +1,5 @@
 <!-- 二百四 — 游戏主页面 -->
-<view class="page">
+<view class="page {{isLandscape ? 'landscape' : ''}}">
 
   <!-- ═══════════ 大厅 ═══════════ -->
   <view id="lobby" wx:if="{{phase === 'lobby'}}">
@@ -16,7 +16,7 @@
   </view>
 
   <!-- ═══════════ 游戏面板 ═══════════ -->
-  <view id="game-board" wx:elif="{{phase !== 'lobby'}}">
+  <view id="game-board" class="{{isLandscape ? 'landscape' : ''}}" wx:elif="{{phase !== 'lobby'}}">
 
     <!-- 顶栏 -->
     <view id="topbar">
@@ -29,44 +29,51 @@
       </view>
     </view>
 
-    <view id="middle-area">
-      <!-- 顶位：AI二 -->
-      <view id="z-top">
-        <view class="ptag {{players[2].active ? 'active' : ''}}">
-          <view class="tdot" wx:if="{{players[2].active}}"></view>
-          <text class="pn">{{players[2].name}}</text>
-          <text class="ps">{{players[2].score}}分</text>
-          <view class="rpill {{players[2].rolePillClass}}" wx:if="{{players[2].rolePill}}">{{players[2].rolePill}}</view>
-        </view>
-        <view class="hcnt">{{players[2].handCount}}张</view>
-        <view id="hand-top">
-          <playing-card
-            wx:for="{{players[2].handCards}}"
-            wx:key="uid"
-            size="small" orientation="portrait"
-            faceUp="{{false}}"
-          />
-        </view>
-      </view>
+    <view id="middle-area" class="{{isLandscape ? 'landscape' : ''}}">
 
-      <!-- 中位：左 + 中央 + 右 -->
-      <view id="mid-row">
-        <!-- 左位：AI三 -->
-        <view id="z-left">
-          <view class="ptag {{players[3].active ? 'active' : ''}}">
-            <view class="tdot" wx:if="{{players[3].active}}"></view>
-            <text class="pn">{{players[3].name}}</text>
-            <text class="ps">{{players[3].score}}分</text>
-            <view class="rpill {{players[3].rolePillClass}}" wx:if="{{players[3].rolePill}}">{{players[3].rolePill}}</view>
+      <!-- ═══════════ 横屏布局 ═══════════ -->
+      <block wx:if="{{isLandscape}}">
+
+        <!-- AI 行：AI三 / AI二 / AI一 水平排列 -->
+        <view id="ai-row">
+          <!-- AI三 seat=3 -->
+          <view class="ai-slot">
+            <view class="ptag {{players[3].active ? 'active' : ''}}">
+              <view class="tdot" wx:if="{{players[3].active}}"></view>
+              <text class="pn">{{players[3].name}}</text>
+              <text class="ps">{{players[3].score}}分</text>
+              <view class="rpill {{players[3].rolePillClass}}" wx:if="{{players[3].rolePill}}">{{players[3].rolePill}}</view>
+            </view>
+            <view class="hcnt">{{players[3].handCount}}张</view>
+            <view class="ai-cards">
+              <playing-card wx:for="{{players[3].handCards}}" wx:key="uid" size="small" orientation="landscape" faceUp="{{false}}" />
+            </view>
           </view>
-          <view class="hcnt">{{players[3].handCount}}张</view>
-          <view id="hand-left">
-            <playing-card
-              wx:for="{{players[3].handCards}}"
-              wx:key="uid"
-              size="small" orientation="landscape"
-              faceUp="{{false}}"
-            />
+          <!-- AI二 seat=2 -->
+          <view class="ai-slot">
+            <view class="ptag {{players[2].active ? 'active' : ''}}">
+              <view class="tdot" wx:if="{{players[2].active}}"></view>
+              <text class="pn">{{players[2].name}}</text>
+              <text class="ps">{{players[2].score}}分</text>
+              <view class="rpill {{players[2].rolePillClass}}" wx:if="{{players[2].rolePill}}">{{players[2].rolePill}}</view>
+            </view>
+            <view class="hcnt">{{players[2].handCount}}张</view>
+            <view class="ai-cards">
+              <playing-card wx:for="{{players[2].handCards}}" wx:key="uid" size="small" orientation="landscape" faceUp="{{false}}" />
+            </view>
+          </view>
+          <!-- AI一 seat=1 -->
+          <view class="ai-slot">
+            <view class="ptag {{players[1].active ? 'active' : ''}}">
+              <view class="tdot" wx:if="{{players[1].active}}"></view>
+              <text class="pn">{{players[1].name}}</text>
+              <text class="ps">{{players[1].score}}分</text>
+              <view class="rpill {{players[1].rolePillClass}}" wx:if="{{players[1].rolePill}}">{{players[1].rolePill}}</view>
+            </view>
+            <view class="hcnt">{{players[1].handCount}}张</view>
+            <view class="ai-cards">
+              <playing-card wx:for="{{players[1].handCards}}" wx:key="uid" size="small" orientation="landscape" faceUp="{{false}}" />
+            </view>
           </view>
         </view>
 
@@ -78,99 +85,133 @@
               <view class="rplay {{item.pos}} {{subWinner === item.seat ? 'win-hl' : ''}}">
                 <view class="rplay-meta">{{players[item.seat].name}}</view>
                 <view class="rplay-pile">
-                  <playing-card
-                    wx:for="{{item.cards}}"
-                    wx:for-item="c"
-                    wx:key="uid"
-                    size="medium" orientation="portrait"
-                    faceUp="{{true}}"
-                    card="{{c}}"
-                  />
+                  <playing-card wx:for="{{item.cards}}" wx:for-item="c" wx:key="uid" size="small" orientation="portrait" faceUp="{{true}}" card="{{c}}" />
                 </view>
               </view>
             </block>
           </view>
-
-          <!-- 喊牌面板 -->
           <view id="shout-panel" wx:if="{{showShoutPanel}}">
-            <view class="shout-lbl">你有10，可以喊副主（喊后本花色成为主牌）</view>
+            <view class="shout-lbl">你有10，可以喊副主</view>
             <view id="shout-btns">
-              <button
-                wx:for="{{shoutSuits}}" wx:key="suit"
-                class="btn btn-ghost btn-sm"
-                bindtap="humanShout"
-                data-suit="{{item.suit}}"
-              >{{item.suit}} {{item.name}}</button>
+              <button wx:for="{{shoutSuits}}" wx:key="suit" class="btn btn-ghost btn-sm" bindtap="humanShout" data-suit="{{item.suit}}">{{item.suit}} {{item.name}}</button>
+            </view>
+          </view>
+          <view id="countdown-bar" wx:if="{{showCountdown}}">{{countdownText}}</view>
+          <view id="rev-panel" wx:if="{{showRevPanel}}">
+            <text class="fl">反牌：</text>
+            <button wx:for="{{revOptions}}" wx:key="key" class="btn {{item.key === 'pass' ? 'btn-red' : 'btn-ghost'}} btn-sm" disabled="{{item.disabled}}" bindtap="humanRev" data-key="{{item.key}}">{{item.label}}</button>
+          </view>
+        </view>
+
+        <!-- 人类信息栏 -->
+        <view id="z-bottom-info">
+          <view class="ptag {{players[0].active ? 'active' : ''}}">
+            <view class="tdot" wx:if="{{players[0].active}}"></view>
+            <text class="pn">{{players[0].name}}</text>
+            <text class="ps">{{players[0].score}}分</text>
+            <view class="rpill {{players[0].rolePillClass}}" wx:if="{{players[0].rolePill}}">{{players[0].rolePill}}</view>
+          </view>
+          <view id="action-bar" wx:if="{{showActionBar}}">
+            <button class="btn btn-ghost btn-sm" bindtap="doHint">提示</button>
+            <button class="btn btn-primary btn-sm" bindtap="doPlay">出牌</button>
+          </view>
+        </view>
+
+        <!-- 手牌滚动 -->
+        <scroll-view id="hand-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+          <view id="hand-bottom">
+            <playing-card wx:for="{{myHand}}" wx:key="uid" size="medium" orientation="portrait" faceUp="{{true}}" card="{{item}}" selected="{{item.selected}}" hintHighlight="{{item.hintHighlight}}" bind:tap="onCardTap" data-uid="{{item.uid}}" />
+          </view>
+        </scroll-view>
+      </block>
+
+      <!-- ═══════════ 竖屏布局（原始） ═══════════ -->
+      <block wx:else>
+        <!-- 顶位：AI二 -->
+        <view id="z-top">
+          <view class="ptag {{players[2].active ? 'active' : ''}}">
+            <view class="tdot" wx:if="{{players[2].active}}"></view>
+            <text class="pn">{{players[2].name}}</text>
+            <text class="ps">{{players[2].score}}分</text>
+            <view class="rpill {{players[2].rolePillClass}}" wx:if="{{players[2].rolePill}}">{{players[2].rolePill}}</view>
+          </view>
+          <view class="hcnt">{{players[2].handCount}}张</view>
+          <view id="hand-top">
+            <playing-card wx:for="{{players[2].handCards}}" wx:key="uid" size="small" orientation="portrait" faceUp="{{false}}" />
+          </view>
+        </view>
+
+        <view id="mid-row">
+          <view id="z-left">
+            <view class="ptag {{players[3].active ? 'active' : ''}}">
+              <view class="tdot" wx:if="{{players[3].active}}"></view>
+              <text class="pn">{{players[3].name}}</text>
+              <text class="ps">{{players[3].score}}分</text>
+              <view class="rpill {{players[3].rolePillClass}}" wx:if="{{players[3].rolePill}}">{{players[3].rolePill}}</view>
+            </view>
+            <view class="hcnt">{{players[3].handCount}}张</view>
+            <view id="hand-left">
+              <playing-card wx:for="{{players[3].handCards}}" wx:key="uid" size="small" orientation="landscape" faceUp="{{false}}" />
             </view>
           </view>
 
-          <!-- 倒计时 -->
-          <view id="countdown-bar" wx:if="{{showCountdown}}">{{countdownText}}</view>
+          <view id="tcenter">
+            <view id="statusbar">{{statusText}}</view>
+            <view id="round-plays" wx:if="{{subPlays.length > 0}}">
+              <block wx:for="{{subPlays}}" wx:key="pos">
+                <view class="rplay {{item.pos}} {{subWinner === item.seat ? 'win-hl' : ''}}">
+                  <view class="rplay-meta">{{players[item.seat].name}}</view>
+                  <view class="rplay-pile">
+                    <playing-card wx:for="{{item.cards}}" wx:for-item="c" wx:key="uid" size="medium" orientation="portrait" faceUp="{{true}}" card="{{c}}" />
+                  </view>
+                </view>
+              </block>
+            </view>
+            <view id="shout-panel" wx:if="{{showShoutPanel}}">
+              <view class="shout-lbl">你有10，可以喊副主（喊后本花色成为主牌）</view>
+              <view id="shout-btns">
+                <button wx:for="{{shoutSuits}}" wx:key="suit" class="btn btn-ghost btn-sm" bindtap="humanShout" data-suit="{{item.suit}}">{{item.suit}} {{item.name}}</button>
+              </view>
+            </view>
+            <view id="countdown-bar" wx:if="{{showCountdown}}">{{countdownText}}</view>
+            <view id="rev-panel" wx:if="{{showRevPanel}}">
+              <text class="fl">反牌：</text>
+              <button wx:for="{{revOptions}}" wx:key="key" class="btn {{item.key === 'pass' ? 'btn-red' : 'btn-ghost'}} btn-sm" disabled="{{item.disabled}}" bindtap="humanRev" data-key="{{item.key}}">{{item.label}}</button>
+            </view>
+          </view>
 
-          <!-- 反牌面板 -->
-          <view id="rev-panel" wx:if="{{showRevPanel}}">
-            <text class="fl">反牌：</text>
-            <button
-              wx:for="{{revOptions}}" wx:key="key"
-              class="btn {{item.key === 'pass' ? 'btn-red' : 'btn-ghost'}} btn-sm"
-              disabled="{{item.disabled}}"
-              bindtap="humanRev"
-              data-key="{{item.key}}"
-            >{{item.label}}</button>
+          <view id="z-right">
+            <view class="ptag {{players[1].active ? 'active' : ''}}">
+              <view class="tdot" wx:if="{{players[1].active}}"></view>
+              <text class="pn">{{players[1].name}}</text>
+              <text class="ps">{{players[1].score}}分</text>
+              <view class="rpill {{players[1].rolePillClass}}" wx:if="{{players[1].rolePill}}">{{players[1].rolePill}}</view>
+            </view>
+            <view class="hcnt">{{players[1].handCount}}张</view>
+            <view id="hand-right">
+              <playing-card wx:for="{{players[1].handCards}}" wx:key="uid" size="small" orientation="landscape" faceUp="{{false}}" />
+            </view>
           </view>
         </view>
 
-        <!-- 右位：AI一 -->
-        <view id="z-right">
-          <view class="ptag {{players[1].active ? 'active' : ''}}">
-            <view class="tdot" wx:if="{{players[1].active}}"></view>
-            <text class="pn">{{players[1].name}}</text>
-            <text class="ps">{{players[1].score}}分</text>
-            <view class="rpill {{players[1].rolePillClass}}" wx:if="{{players[1].rolePill}}">{{players[1].rolePill}}</view>
+        <view id="z-bottom">
+          <view class="ptag {{players[0].active ? 'active' : ''}}" style="margin-bottom:8rpx">
+            <view class="tdot" wx:if="{{players[0].active}}"></view>
+            <text class="pn">{{players[0].name}}</text>
+            <text class="ps">{{players[0].score}}分</text>
+            <view class="rpill {{players[0].rolePillClass}}" wx:if="{{players[0].rolePill}}">{{players[0].rolePill}}</view>
           </view>
-          <view class="hcnt">{{players[1].handCount}}张</view>
-          <view id="hand-right">
-            <playing-card
-              wx:for="{{players[1].handCards}}"
-              wx:key="uid"
-              size="small" orientation="landscape"
-              faceUp="{{false}}"
-            />
+          <view id="action-bar" wx:if="{{showActionBar}}">
+            <button class="btn btn-ghost" bindtap="doHint">提示</button>
+            <button class="btn btn-primary" bindtap="doPlay">出牌</button>
           </view>
+          <scroll-view id="hand-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+            <view id="hand-bottom">
+              <playing-card wx:for="{{myHand}}" wx:key="uid" size="large" orientation="portrait" faceUp="{{true}}" card="{{item}}" selected="{{item.selected}}" hintHighlight="{{item.hintHighlight}}" bind:tap="onCardTap" data-uid="{{item.uid}}" />
+            </view>
+          </scroll-view>
         </view>
-      </view>
-
-      <!-- 底位：你 -->
-      <view id="z-bottom">
-        <view class="ptag {{players[0].active ? 'active' : ''}}" style="margin-bottom:8rpx">
-          <view class="tdot" wx:if="{{players[0].active}}"></view>
-          <text class="pn">{{players[0].name}}</text>
-          <text class="ps">{{players[0].score}}分</text>
-          <view class="rpill {{players[0].rolePillClass}}" wx:if="{{players[0].rolePill}}">{{players[0].rolePill}}</view>
-        </view>
-
-        <!-- 操作栏 -->
-        <view id="action-bar" wx:if="{{showActionBar}}">
-          <button class="btn btn-ghost" bindtap="doHint">提示</button>
-          <button class="btn btn-primary" bindtap="doPlay">出牌</button>
-        </view>
-
-        <!-- 手牌滚动区域 -->
-        <scroll-view id="hand-scroll" scroll-x enhanced show-scrollbar="{{false}}">
-          <view id="hand-bottom">
-            <playing-card
-              wx:for="{{myHand}}" wx:key="uid"
-              size="large" orientation="portrait"
-              faceUp="{{true}}"
-              card="{{item}}"
-              selected="{{item.selected}}"
-              hintHighlight="{{item.hintHighlight}}"
-              bind:tap="onCardTap"
-              data-uid="{{item.uid}}"
-            />
-          </view>
-        </scroll-view>
-      </view>
+      </block>
     </view>
   </view>
 

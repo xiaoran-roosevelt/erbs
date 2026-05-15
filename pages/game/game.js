@@ -20,7 +20,7 @@ var SEAT_POS = { 0: 'rp-bottom', 1: 'rp-right', 2: 'rp-top', 3: 'rp-left' };
 Page({
   data: {
     phase: 'lobby',
-    isLandscape: false,
+    isLandscape: true,
     subSuitDisplay: '正主',
     subSuitGold: false,
     roundNum: 1,
@@ -76,7 +76,6 @@ Page({
   onLoad: function () {
     this.G = this._makeG();
     this._detectOrientation();
-    wx.setPageOrientation({ orientation: 'landscape' });
   },
 
   onHide: function () {

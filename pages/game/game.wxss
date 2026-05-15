@@ -337,7 +337,8 @@
 
 /* ── 顶栏 ── */
 .landscape #topbar {
-  padding: 2rpx 16rpx; height: 24rpx;
+  padding: 4rpx 16rpx;
+  overflow: hidden;
 }
 .landscape .gtitle { font-size: 18rpx; letter-spacing: 2rpx; }
 .landscape .chips { gap: 6rpx; }
@@ -361,8 +362,8 @@
   display: flex; flex-direction: row;
   justify-content: space-around; align-items: center;
   flex-shrink: 0;
-  padding: 2rpx 12rpx;
-  height: 44rpx;
+  padding: 4rpx 12rpx;
+  overflow: hidden;
 }
 .ai-slot {
   display: flex; flex-direction: row;
@@ -381,7 +382,7 @@
 .ai-cards {
   display: flex; flex-direction: row;
 }
-.ai-cards .card { margin-left: -28rpx; }
+.ai-cards .card { margin-left: -34rpx; }
 .ai-cards .card:first-child { margin-left: 0; }
 
 /* ── 中央区 ── */
@@ -406,7 +407,7 @@
 .landscape .rp-left { grid-column: 1; grid-row: 2; }
 .landscape .rp-bottom { grid-column: 2; grid-row: 2; }
 .landscape .rplay { min-height: 50rpx; padding: 1rpx; gap: 1rpx; }
-.landscape .rplay-pile .card { margin-left: -8rpx; }
+.landscape .rplay-pile .card { margin-left: -10rpx; }
 .landscape .rplay-meta { font-size: 14rpx; }
 .landscape .rplay.win-hl .rplay-pile .card {
   box-shadow: 0 0 0 2rpx var(--gold), 0 4rpx 12rpx rgba(212, 168, 67, .4) !important;
@@ -432,8 +433,8 @@
   display: flex; flex-direction: row;
   align-items: center; justify-content: space-between;
   flex-shrink: 0;
-  padding: 2rpx 20rpx;
-  height: 26rpx;
+  padding: 6rpx 20rpx;
+  overflow: visible;
 }
 #z-bottom-info .ptag {
   padding: 2rpx 12rpx; gap: 6rpx;
@@ -454,21 +455,23 @@
 
 /* ── 手牌 ── */
 .landscape #hand-scroll {
-  flex-shrink: 0;
-  height: 150rpx;
+  flex-shrink: 1;
+  flex-basis: 130rpx;
+  min-height: 100rpx;
+  overflow: hidden;
 }
 .landscape #hand-bottom {
-  padding: 10rpx 16rpx;
+  padding: 8rpx 16rpx;
   align-items: flex-end;
 }
 .landscape #hand-bottom .card {
-  margin-left: -20rpx;
+  margin-left: -36rpx;
 }
 .landscape #hand-bottom .card:first-child {
   margin-left: 0;
 }
 .landscape #hand-bottom .card.sel {
-  transform: translateY(-24rpx) !important;
+  transform: translateY(-20rpx) !important;
 }
 
 /* ── Toast ── */

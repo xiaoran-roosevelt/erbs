@@ -1,150 +1,257 @@
-/* 二百四 — 游戏页面样式 */
+/* 二百四 — 游戏页面样式（重设计版） */
 
-/* ── 全局页面 ── */
+/* ══════════════════════════════════════════
+   全局页面
+   ══════════════════════════════════════════ */
 .page {
   width: 100vw; height: 100vh;
   overflow: hidden;
   position: relative;
   display: flex; flex-direction: column;
-  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(91, 155, 213, .08), transparent);
+  /* 牌桌质感背景 */
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(14, 33, 23, .7), transparent),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(13, 16, 32, .8), transparent),
+    linear-gradient(160deg, #080b12 0%, #0a0e1a 50%, #080b12 100%);
 }
 
-/* ── 大厅 ── */
+/* 牌桌纹理叠加层（伪装） */
+.page::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 2rpx,
+      rgba(255,255,255,.008) 2rpx,
+      rgba(255,255,255,.008) 4rpx
+    );
+  pointer-events: none; z-index: 0;
+}
+
+/* ══════════════════════════════════════════
+   大厅
+   ══════════════════════════════════════════ */
 #lobby {
   position: fixed; inset: 0; z-index: 100;
   display: flex; align-items: center; justify-content: center;
-  background: var(--bg);
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 40%, rgba(14, 33, 23, .55), transparent),
+    var(--bg);
 }
-.lbox {
-  background: var(--s1);
-  border: 1px solid var(--b1);
-  border-radius: 20rpx;
-  padding: 60rpx 64rpx;
-  width: 520rpx;
-  box-shadow: 0 40rpx 80rpx rgba(0, 0, 0, .6);
-}
-.logo { text-align: center; margin-bottom: 32rpx; }
-.logo .lt { font-size: 72rpx; font-weight: 700; letter-spacing: 6rpx; color: var(--t1); }
-.logo .lt em { color: var(--gold); font-style: normal; }
-.logo .ls { font-size: 20rpx; color: var(--t2); letter-spacing: 4rpx; margin-top: 8rpx; }
-.sep { height: 1px; background: var(--b1); margin: 24rpx 0; }
 
-/* ── 按钮 ── */
+.lbox {
+  background: linear-gradient(145deg, rgba(21, 26, 44, .98), rgba(15, 18, 30, .98));
+  border: 1px solid rgba(212, 168, 67, .18);
+  border-radius: 28rpx;
+  padding: 64rpx 72rpx;
+  width: 540rpx;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 48rpx 96rpx rgba(0, 0, 0, .75),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 大厅卡片顶部金色光晕 */
+.lbox::before {
+  content: '';
+  position: absolute;
+  top: -40rpx; left: 50%; transform: translateX(-50%);
+  width: 300rpx; height: 80rpx;
+  background: radial-gradient(ellipse, rgba(212, 168, 67, .20), transparent);
+  pointer-events: none;
+}
+
+.logo { text-align: center; margin-bottom: 36rpx; }
+.logo .lt {
+  font-size: 80rpx; font-weight: 900;
+  letter-spacing: 8rpx; color: var(--t1);
+  text-shadow: 0 0 40rpx rgba(212,168,67,.15);
+}
+.logo .lt em { color: var(--gold); font-style: normal; }
+.logo .ls {
+  font-size: 20rpx; color: var(--t3);
+  letter-spacing: 6rpx; margin-top: 10rpx;
+  text-transform: uppercase;
+}
+
+.sep {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--b2), transparent);
+  margin: 28rpx 0;
+}
+
+/* ══════════════════════════════════════════
+   按钮系统
+   ══════════════════════════════════════════ */
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
-  gap: 10rpx; padding: 18rpx 30rpx; border-radius: 14rpx;
-  border: none; font-size: 26rpx; font-weight: 600;
-  transition: all .14s; white-space: nowrap;
+  gap: 10rpx; padding: 20rpx 32rpx; border-radius: 14rpx;
+  border: none; font-size: 26rpx; font-weight: 700;
+  transition: all .16s cubic-bezier(.34, 1.4, .64, 1);
+  white-space: nowrap; position: relative; overflow: hidden;
 }
-.btn:active { transform: scale(.97); opacity: .8; }
-.btn:disabled { opacity: .35; }
-.btn-primary { background: var(--blue); color: #06101e; }
-.btn-ghost { background: var(--s2); color: var(--t1); border: 1px solid var(--b2); }
-.btn-gold { background: linear-gradient(135deg, var(--gold2), var(--gold)); color: #1a0e00; }
-.btn-red { background: #6e2020; color: #ffd0d0; border: 1px solid rgba(224, 90, 90, .25); }
-.btn-block { width: 100%; }
-.btn-sm { padding: 10rpx 20rpx; font-size: 22rpx; }
+.btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.08), transparent);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.btn:active { transform: scale(.95); opacity: .85; }
+.btn:disabled { opacity: .32; pointer-events: none; }
 
-/* ── 游戏主界面 ── */
+.btn-primary {
+  background: linear-gradient(135deg, #5b9bd5, #3a7abf);
+  color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(79, 143, 206, .40), inset 0 1px 0 rgba(255,255,255,.15);
+}
+.btn-ghost {
+  background: rgba(255,255,255,.06);
+  color: var(--t1);
+  border: 1px solid var(--b2);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+.btn-gold {
+  background: linear-gradient(135deg, #e8b84a, #c4952a);
+  color: #1a0e00;
+  box-shadow: 0 8rpx 24rpx rgba(212, 168, 67, .45), inset 0 1px 0 rgba(255,255,255,.20);
+}
+.btn-red {
+  background: linear-gradient(135deg, #7a2424, #5a1a1a);
+  color: #ffd0d0;
+  border: 1px solid rgba(224, 90, 90, .22);
+}
+.btn-block { width: 100%; }
+.btn-sm { padding: 10rpx 22rpx; font-size: 22rpx; border-radius: 10rpx; }
+
+/* ══════════════════════════════════════════
+   游戏面板框架
+   ══════════════════════════════════════════ */
 #game-board {
   flex: 1; display: flex; flex-direction: column;
   position: relative; overflow: hidden;
-  height: 100vh;
+  height: 100vh; z-index: 1;
 }
 
-/* ── 顶栏 ── */
+/* ══════════════════════════════════════════
+   顶栏
+   ══════════════════════════════════════════ */
 #topbar {
   display: flex; align-items: center; gap: 16rpx;
-  padding: 12rpx 24rpx;
-  background: linear-gradient(180deg, rgba(12, 14, 19, .95), transparent);
+  padding: 14rpx 24rpx;
+  background: linear-gradient(180deg, rgba(8, 11, 18, .96) 0%, rgba(8, 11, 18, .0) 100%);
   z-index: 30; flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,.03);
 }
-.gtitle { font-size: 24rpx; font-weight: 700; letter-spacing: 3rpx; color: var(--t2); }
+
+.gtitle {
+  font-size: 26rpx; font-weight: 900;
+  letter-spacing: 4rpx; color: var(--gold);
+  text-shadow: 0 0 20rpx var(--gold-glow);
+}
+
 .chips { display: flex; gap: 10rpx; margin-left: auto; }
 .chip {
-  background: var(--s1); border: 1px solid var(--b1);
-  border-radius: 24rpx; padding: 6rpx 16rpx;
-  font-size: 20rpx; color: var(--t2);
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--b1);
+  border-radius: 28rpx; padding: 6rpx 16rpx;
+  font-size: 19rpx; color: var(--t2);
   display: flex; align-items: center; gap: 6rpx;
+  backdrop-filter: blur(4px);
 }
-.chip .cv { font-weight: 700; font-size: 22rpx; color: var(--t1); }
+.chip .cv { font-weight: 800; font-size: 21rpx; color: var(--t1); }
 .cv.pos { color: var(--green) !important; }
 .cv.neg { color: var(--red) !important; }
-.cv.gold { color: var(--gold) !important; }
+.cv.gold { color: var(--gold) !important; text-shadow: 0 0 8rpx var(--gold-glow); }
 
-/* ── 玩家区域容器 ── */
+/* ══════════════════════════════════════════
+   玩家区域容器
+   ══════════════════════════════════════════ */
 #middle-area {
   flex: 1; display: flex; flex-direction: column;
   position: relative; overflow: hidden;
   min-height: 0;
+  /* 牌桌绿色区域 */
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(14, 33, 23, .65), transparent);
 }
 
-/* 顶位：AI二 */
+/* ── 竖屏：各区域 ── */
 #z-top {
   display: flex; flex-direction: column;
-  align-items: center; gap: 4rpx;
-  flex-shrink: 0; padding-top: 4rpx;
+  align-items: center; gap: 6rpx;
+  flex-shrink: 0; padding-top: 8rpx;
 }
 
-/* 中位：左右 + 中央 */
 #mid-row {
   flex: 1; display: flex; flex-direction: row;
   position: relative; min-height: 0;
 }
 
-/* 左位：AI三 */
 #z-left {
-  width: 100rpx; flex-shrink: 0;
+  width: 108rpx; flex-shrink: 0;
   display: flex; flex-direction: column;
-  align-items: center; gap: 4rpx;
+  align-items: center; gap: 6rpx;
   justify-content: center;
 }
 
-/* 中央区域 */
 #tcenter {
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 10rpx; position: relative;
+  gap: 12rpx; position: relative;
 }
 
-/* 右位：AI一 */
 #z-right {
-  width: 100rpx; flex-shrink: 0;
+  width: 108rpx; flex-shrink: 0;
   display: flex; flex-direction: column;
-  align-items: center; gap: 4rpx;
+  align-items: center; gap: 6rpx;
   justify-content: center;
 }
 
-/* ── 底位：你 ── */
+/* ── 底区：玩家 ── */
 #z-bottom {
   flex-shrink: 0;
   display: flex; flex-direction: column;
   align-items: center;
   padding-bottom: env(safe-area-inset-bottom);
+  background: linear-gradient(0deg, rgba(8,11,18,.90) 0%, transparent 100%);
 }
 
-/* ── 玩家名牌 ── */
+/* ══════════════════════════════════════════
+   玩家名牌
+   ══════════════════════════════════════════ */
 .ptag {
   display: flex; align-items: center; gap: 8rpx;
-  background: rgba(19, 22, 31, .92);
-  border: 1px solid var(--b1);
-  border-radius: 24rpx; padding: 6rpx 16rpx;
-  transition: border-color .25s, box-shadow .25s;
+  background: linear-gradient(135deg, rgba(17, 21, 37, .96), rgba(13, 16, 28, .96));
+  border: 1px solid var(--b2);
+  border-radius: 28rpx; padding: 7rpx 18rpx;
+  transition: border-color .3s, box-shadow .3s;
+  backdrop-filter: blur(6px);
 }
-.ptag.active { border-color: var(--blue2); box-shadow: 0 0 10rpx rgba(91, 155, 213, .2); }
-.ptag .pn { font-size: 22rpx; font-weight: 600; white-space: nowrap; }
-.ptag .ps { font-size: 20rpx; color: var(--t2); }
+.ptag.active {
+  border-color: rgba(79, 143, 206, .55);
+  box-shadow: 0 0 16rpx rgba(79, 143, 206, .22), inset 0 0 10rpx rgba(79,143,206,.06);
+}
+.ptag .pn { font-size: 22rpx; font-weight: 700; white-space: nowrap; color: var(--t1); }
+.ptag .ps { font-size: 19rpx; color: var(--t2); }
 
+/* 回合指示点 */
 .tdot {
   width: 10rpx; height: 10rpx; border-radius: 50%;
-  background: var(--blue); box-shadow: 0 0 8rpx var(--blue);
-  animation: blink 1s infinite;
+  background: var(--blue);
+  box-shadow: 0 0 10rpx var(--blue), 0 0 20rpx rgba(79,143,206,.4);
+  animation: blink 1.1s ease-in-out infinite;
 }
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
 
 .hcnt {
   font-size: 18rpx; color: var(--t2);
-  background: var(--s2); border: 1px solid var(--b1);
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--b1);
   border-radius: 10rpx; padding: 4rpx 12rpx;
 }
 
@@ -152,18 +259,24 @@
   font-size: 16rpx; font-weight: 700;
   padding: 3rpx 10rpx; border-radius: 8rpx;
 }
-.rp-shout { background: rgba(212, 168, 67, .15); color: var(--gold); border: 1px solid rgba(212, 168, 67, .3); }
-.rp-rev { background: rgba(91, 155, 213, .15); color: var(--blue); border: 1px solid rgba(91, 155, 213, .3); }
+.rp-shout {
+  background: rgba(212, 168, 67, .12);
+  color: var(--gold);
+  border: 1px solid rgba(212, 168, 67, .28);
+}
+.rp-rev {
+  background: rgba(79, 143, 206, .12);
+  color: var(--blue);
+  border: 1px solid rgba(79, 143, 206, .28);
+}
 
-/* ── 手牌显示 ── */
-.hwrap { display: flex; justify-content: center; padding: 8rpx 10rpx 10rpx; }
-
-/* AI 顶部手牌横向 */
+/* ══════════════════════════════════════════
+   手牌布局
+   ══════════════════════════════════════════ */
 #hand-top { display: flex; flex-direction: row; justify-content: center; }
 #hand-top .card { margin-left: -16rpx; }
 #hand-top .card:first-child { margin-left: 0; }
 
-/* AI 左右手牌纵向 */
 #hand-left { display: flex; flex-direction: column; }
 #hand-left .card { margin-top: -14rpx; }
 #hand-left .card:first-child { margin-top: 0; }
@@ -172,99 +285,130 @@
 #hand-right .card { margin-top: -14rpx; }
 #hand-right .card:first-child { margin-top: 0; }
 
-/* 人类手牌区域 */
-#bottom-hand-area {
-  display: flex; flex-direction: column;
-  align-items: center; width: 100%;
-}
-
-/* 手牌横向滚动 */
 #hand-scroll {
   width: 100%; white-space: nowrap;
 }
 #hand-bottom {
   display: flex; flex-direction: row;
   align-items: flex-end; justify-content: flex-start;
-  padding: 10rpx 20rpx;
+  padding: 12rpx 24rpx 6rpx;
 }
 #hand-bottom .card { margin-left: -28rpx; }
 #hand-bottom .card:first-child { margin-left: 0; }
 
-/* ── 中央信息区 ── */
+/* ══════════════════════════════════════════
+   中央信息区
+   ══════════════════════════════════════════ */
 #statusbar {
-  background: rgba(19, 22, 31, .93);
-  border: 1px solid var(--b1); border-radius: 12rpx;
-  padding: 8rpx 24rpx; font-size: 22rpx; color: var(--t2);
-  text-align: center; min-width: 280rpx;
+  background: linear-gradient(135deg, rgba(17, 21, 37, .95), rgba(13, 16, 28, .95));
+  border: 1px solid var(--b2);
+  border-radius: 14rpx;
+  padding: 10rpx 28rpx;
+  font-size: 22rpx; color: var(--t2);
+  text-align: center; min-width: 260rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,.3);
+  backdrop-filter: blur(6px);
 }
 
-/* 出牌展示 grid */
+/* ── 出牌展示 grid ── */
 #round-plays {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto auto;
   gap: 8rpx; width: 100%;
 }
-.rplay { display: flex; flex-direction: column; align-items: center; gap: 4rpx; min-height: 60rpx; padding: 4rpx; }
-.rp-top { grid-column: 1/3; grid-row: 1; }
-.rp-left { grid-column: 1; grid-row: 2; }
-.rp-right { grid-column: 2; grid-row: 2; align-items: flex-end; }
+.rplay {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4rpx;
+  min-height: 60rpx; padding: 4rpx;
+}
+.rp-top    { grid-column: 1/3; grid-row: 1; }
+.rp-left   { grid-column: 1;   grid-row: 2; }
+.rp-right  { grid-column: 2;   grid-row: 2; align-items: flex-end; }
 .rp-bottom { grid-column: 1/3; grid-row: 3; }
+
 .rplay-pile { display: flex; justify-content: center; }
 .rplay-pile .card { margin-left: -14rpx; }
 .rplay-pile .card:first-child { margin-left: 0; }
 .rplay-meta { font-size: 18rpx; color: var(--t2); }
+
+/* 胜出高亮 */
 .rplay.win-hl .rplay-pile .card {
-  box-shadow: 0 0 0 3rpx var(--gold), 0 6rpx 18rpx rgba(212, 168, 67, .4) !important;
+  box-shadow:
+    0 0 0 3rpx var(--gold),
+    0 6rpx 20rpx rgba(212, 168, 67, .5) !important;
+  animation: winPulse .6s ease-out;
+}
+@keyframes winPulse {
+  0%   { transform: scale(1.0); }
+  40%  { transform: scale(1.06); }
+  100% { transform: scale(1.0); }
 }
 
-/* ── 喊牌面板 ── */
+/* ══════════════════════════════════════════
+   喊牌面板
+   ══════════════════════════════════════════ */
 #shout-panel {
-  position: absolute; top: 60rpx; left: 50%;
+  position: absolute; top: 64rpx; left: 50%;
   transform: translateX(-50%);
-  background: rgba(19, 22, 31, .97);
-  border: 1px solid rgba(212, 168, 67, .25);
-  border-radius: 18rpx; padding: 16rpx 20rpx;
+  background: linear-gradient(145deg, rgba(19, 22, 36, .98), rgba(14, 17, 28, .98));
+  border: 1px solid rgba(212, 168, 67, .30);
+  border-radius: 20rpx; padding: 20rpx 24rpx;
   display: flex; flex-direction: column;
-  align-items: center; gap: 12rpx;
-  box-shadow: 0 16rpx 32rpx rgba(0, 0, 0, .5);
+  align-items: center; gap: 14rpx;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.04), 0 24rpx 48rpx rgba(0, 0, 0, .65);
   z-index: 50; min-width: 400rpx;
+  animation: fadeSlideIn .22s cubic-bezier(.34,1.4,.64,1);
 }
-.shout-lbl { font-size: 20rpx; color: var(--t2); text-align: center; }
+.shout-lbl { font-size: 20rpx; color: var(--gold); text-align: center; font-weight: 600; }
 #shout-btns { display: flex; gap: 10rpx; flex-wrap: wrap; justify-content: center; }
 
-/* ── 倒计时 ── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-12rpx); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ══════════════════════════════════════════
+   倒计时
+   ══════════════════════════════════════════ */
 #countdown-bar {
   position: absolute; bottom: 200rpx; left: 50%;
   transform: translateX(-50%);
-  background: rgba(212, 168, 67, .12);
-  border: 1px solid rgba(212, 168, 67, .3);
-  border-radius: 24rpx; padding: 8rpx 24rpx;
+  background: rgba(212, 168, 67, .10);
+  border: 1px solid rgba(212, 168, 67, .35);
+  border-radius: 28rpx; padding: 8rpx 28rpx;
   font-size: 22rpx; color: var(--gold);
-  font-weight: 700; z-index: 50;
+  font-weight: 800; z-index: 50;
   text-align: center; pointer-events: none;
+  box-shadow: 0 0 20rpx rgba(212,168,67,.15);
 }
 
-/* ── 反牌面板 ── */
+/* ══════════════════════════════════════════
+   反牌面板
+   ══════════════════════════════════════════ */
 #rev-panel {
   position: absolute; bottom: 200rpx; left: 50%;
   transform: translateX(-50%);
-  background: rgba(19, 22, 31, .97);
-  border: 1px solid var(--b1);
-  border-radius: 18rpx; padding: 16rpx 20rpx;
-  display: flex; align-items: center; gap: 10rpx;
+  background: linear-gradient(145deg, rgba(19, 22, 36, .98), rgba(14, 17, 28, .98));
+  border: 1px solid var(--b2);
+  border-radius: 20rpx; padding: 18rpx 24rpx;
+  display: flex; align-items: center; gap: 12rpx;
   flex-wrap: wrap; justify-content: center;
-  box-shadow: 0 16rpx 32rpx rgba(0, 0, 0, .5);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.04), 0 20rpx 40rpx rgba(0, 0, 0, .55);
   z-index: 50;
 }
 .fl { font-size: 20rpx; color: var(--t2); }
 
-/* ── 操作栏 ── */
+/* ══════════════════════════════════════════
+   操作栏
+   ══════════════════════════════════════════ */
 #action-bar {
-  display: flex; gap: 16rpx; padding: 10rpx 0; z-index: 40;
+  display: flex; gap: 18rpx; padding: 10rpx 0; z-index: 40;
 }
 
-/* ── Toast ── */
+/* ══════════════════════════════════════════
+   Toast
+   ══════════════════════════════════════════ */
 #toasts {
   position: fixed; top: 80rpx; left: 50%;
   transform: translateX(-50%);
@@ -273,223 +417,221 @@
   z-index: 200; pointer-events: none;
 }
 .toast {
-  background: var(--s1); border: 1px solid var(--b1);
-  border-radius: 20rpx; padding: 8rpx 20rpx;
-  font-size: 22rpx; box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, .4);
-  animation: tsin .26s cubic-bezier(.34, 1.56, .64, 1);
+  background: linear-gradient(135deg, rgba(19, 22, 37, .97), rgba(14, 17, 28, .97));
+  border: 1px solid var(--b2);
+  border-radius: 22rpx; padding: 10rpx 24rpx;
+  font-size: 22rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, .5);
+  animation: tsin .28s cubic-bezier(.34, 1.56, .64, 1);
+  backdrop-filter: blur(8px);
 }
 .toast.out { animation: tsout .2s forwards; }
-.tgold { border-color: rgba(212, 168, 67, .4); color: var(--gold); }
-.tred { border-color: rgba(224, 90, 90, .4); color: var(--red); }
-.tgreen { border-color: rgba(82, 194, 122, .3); color: var(--green); }
-@keyframes tsin { from { opacity: 0; transform: translateY(-10rpx) scale(.92); } to { opacity: 1; transform: none; } }
-@keyframes tsout { to { opacity: 0; transform: translateY(-10rpx) scale(.92); } }
+.tgold { border-color: rgba(212, 168, 67, .45); color: var(--gold); }
+.tred  { border-color: rgba(224, 90, 90, .45);  color: var(--red); }
+.tgreen{ border-color: rgba(78, 200, 122, .35);  color: var(--green); }
+@keyframes tsin  { from { opacity: 0; transform: translateY(-12rpx) scale(.90); } to { opacity: 1; transform: none; } }
+@keyframes tsout { to   { opacity: 0; transform: translateY(-12rpx) scale(.90); } }
 
-/* ── 结算界面 ── */
+/* ══════════════════════════════════════════
+   结算界面
+   ══════════════════════════════════════════ */
 #endlay {
   position: fixed; inset: 0; z-index: 300;
-  background: rgba(0, 0, 0, .82);
+  background: rgba(4, 6, 12, .88);
   display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
 }
 .ebox {
-  background: var(--s1); border: 1px solid var(--b1);
-  border-radius: 28rpx; padding: 48rpx 56rpx;
-  width: 560rpx; text-align: center;
-  animation: popIn .38s cubic-bezier(.34, 1.56, .64, 1);
-  box-shadow: 0 40rpx 80rpx rgba(0, 0, 0, .7);
+  background: linear-gradient(145deg, rgba(19, 23, 40, .99), rgba(13, 16, 28, .99));
+  border: 1px solid rgba(212, 168, 67, .22);
+  border-radius: 32rpx; padding: 56rpx 64rpx;
+  width: 580rpx; text-align: center;
+  animation: popIn .40s cubic-bezier(.34, 1.56, .64, 1);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 48rpx 96rpx rgba(0, 0, 0, .80),
+    0 0 80rpx rgba(212,168,67,.06);
+  position: relative; overflow: hidden;
 }
-@keyframes popIn { from { opacity: 0; transform: scale(.76); } to { opacity: 1; transform: none; } }
-.eemoji { font-size: 72rpx; margin-bottom: 8rpx; }
-.etitle { font-size: 38rpx; font-weight: 700; margin-bottom: 6rpx; }
-.etitle.win { color: var(--gold); }
+/* 结算卡顶部光晕 */
+.ebox::before {
+  content: '';
+  position: absolute;
+  top: -50rpx; left: 50%; transform: translateX(-50%);
+  width: 400rpx; height: 100rpx;
+  background: radial-gradient(ellipse, rgba(212,168,67,.18), transparent);
+  pointer-events: none;
+}
+
+@keyframes popIn { from { opacity: 0; transform: scale(.74); } to { opacity: 1; transform: none; } }
+
+.eemoji { font-size: 80rpx; margin-bottom: 10rpx; }
+.etitle { font-size: 42rpx; font-weight: 900; margin-bottom: 6rpx; letter-spacing: 2rpx; }
+.etitle.win  { color: var(--gold); text-shadow: 0 0 30rpx var(--gold-glow); }
 .etitle.lose { color: var(--red); }
-.etitle.tie { color: var(--blue); }
-.stbl { width: 100%; border-collapse: collapse; margin: 20rpx 0; }
-.stbl th { font-size: 18rpx; color: var(--t3); text-transform: uppercase; letter-spacing: 2rpx; padding: 8rpx; border-bottom: 1px solid var(--b1); }
-.stbl td { font-size: 22rpx; padding: 10rpx 8rpx; border-bottom: 1px solid var(--b1); color: var(--t2); }
-.stbl .you { color: var(--t1); font-weight: 700; }
+.etitle.tie  { color: var(--blue); }
+
+.stbl { width: 100%; border-collapse: collapse; margin: 24rpx 0; }
+.stbl th {
+  font-size: 18rpx; color: var(--t3);
+  text-transform: uppercase; letter-spacing: 3rpx;
+  padding: 10rpx; border-bottom: 1px solid var(--b2);
+}
+.stbl td {
+  font-size: 22rpx; padding: 12rpx 8rpx;
+  border-bottom: 1px solid var(--b1); color: var(--t2);
+}
+.stbl .you { color: var(--t1); font-weight: 800; }
 .pos-color { color: var(--green); }
 .neg-color { color: var(--red); }
-.eacts { display: flex; gap: 16rpx; justify-content: center; margin-top: 10rpx; }
 
-/* ── 抖动动画 ── */
+.eacts { display: flex; gap: 18rpx; justify-content: center; margin-top: 14rpx; }
+
+/* ══════════════════════════════════════════
+   抖动动画
+   ══════════════════════════════════════════ */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-8rpx); }
-  40% { transform: translateX(8rpx); }
-  60% { transform: translateX(-6rpx); }
-  80% { transform: translateX(6rpx); }
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-9rpx); }
+  40%      { transform: translateX(9rpx); }
+  60%      { transform: translateX(-6rpx); }
+  80%      { transform: translateX(6rpx); }
 }
-.shake { animation: shake .28s; }
+.shake { animation: shake .30s; }
 
-/* ── 屏幕适配 ── */
-/* 小屏设备（iPhone SE 320px） */
+/* ══════════════════════════════════════════
+   小屏适配
+   ══════════════════════════════════════════ */
 @media screen and (max-width: 350px) {
-  .logo .lt { font-size: 56rpx; }
-  .lbox { width: 460rpx; padding: 40rpx 32rpx; }
-  #z-left, #z-right { width: 80rpx; }
+  .logo .lt { font-size: 60rpx; }
+  .lbox { width: 480rpx; padding: 44rpx 36rpx; }
+  #z-left, #z-right { width: 88rpx; }
   .ptag .pn { font-size: 18rpx; }
 }
 
 /* ══════════════════════════════════════════
-   横屏布局 (.landscape)
+   横屏布局
    ══════════════════════════════════════════ */
 
-/* ── 顶栏 ── */
 .landscape #topbar {
-  padding: 4rpx 16rpx;
-  overflow: hidden;
+  padding: 4rpx 18rpx; overflow: hidden;
 }
-.landscape .gtitle { font-size: 18rpx; letter-spacing: 2rpx; }
-.landscape .chips { gap: 6rpx; }
-.landscape .chip { font-size: 16rpx; padding: 2rpx 10rpx; border-radius: 16rpx; }
+.landscape .gtitle { font-size: 20rpx; letter-spacing: 3rpx; }
+.landscape .chips { gap: 7rpx; }
+.landscape .chip { font-size: 16rpx; padding: 3rpx 12rpx; border-radius: 18rpx; }
 .landscape .chip .cv { font-size: 18rpx; }
 
-/* ── 游戏面板 ── */
 .landscape#game-board {
-  flex: 1; display: flex; flex-direction: column;
-  overflow: hidden;
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
 }
 
-/* ── middle-area ── */
 .landscape #middle-area {
   display: flex; flex-direction: column;
   flex: 1; min-height: 0;
 }
 
-/* ── AI 行 ── */
 #ai-row {
   display: flex; flex-direction: row;
   justify-content: space-around; align-items: center;
-  flex-shrink: 0;
-  padding: 4rpx 12rpx;
+  flex-shrink: 0; padding: 5rpx 16rpx;
   overflow: hidden;
+  border-bottom: 1px solid var(--b1);
+  background: rgba(8,11,18,.4);
 }
 .ai-slot {
   display: flex; flex-direction: row;
-  align-items: center; gap: 6rpx;
+  align-items: center; gap: 8rpx;
 }
-.ai-slot .ptag {
-  padding: 2rpx 8rpx; gap: 4rpx;
-  border-radius: 14rpx;
-}
+.ai-slot .ptag { padding: 3rpx 10rpx; gap: 5rpx; border-radius: 16rpx; }
 .ai-slot .pn { font-size: 16rpx; }
 .ai-slot .ps { font-size: 14rpx; }
-.ai-slot .hcnt { font-size: 14rpx; padding: 1rpx 8rpx; }
+.ai-slot .hcnt { font-size: 14rpx; padding: 2rpx 8rpx; }
 .ai-slot .tdot { width: 8rpx; height: 8rpx; }
-.ai-slot .rpill { font-size: 12rpx; padding: 1rpx 6rpx; }
+.ai-slot .rpill { font-size: 12rpx; padding: 2rpx 7rpx; }
 
-.ai-cards {
-  display: flex; flex-direction: row;
-}
+.ai-cards { display: flex; flex-direction: row; }
 .ai-cards .card { margin-left: -34rpx; }
 .ai-cards .card:first-child { margin-left: 0; }
 
-/* ── 中央区 ── */
 .landscape #tcenter {
   flex: 1; min-height: 0;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 4rpx; position: relative;
+  gap: 5rpx; position: relative;
 }
 .landscape #statusbar {
-  font-size: 18rpx; padding: 4rpx 16rpx;
-  min-width: auto; border-radius: 10rpx;
+  font-size: 18rpx; padding: 5rpx 18rpx;
+  min-width: auto; border-radius: 12rpx;
 }
 .landscape #round-plays {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
-  gap: 4rpx; width: 300rpx;
+  gap: 5rpx; width: 310rpx;
 }
-.landscape .rp-top { grid-column: 1; grid-row: 1; }
-.landscape .rp-right { grid-column: 2; grid-row: 1; }
-.landscape .rp-left { grid-column: 1; grid-row: 2; }
+.landscape .rp-top    { grid-column: 1; grid-row: 1; }
+.landscape .rp-right  { grid-column: 2; grid-row: 1; }
+.landscape .rp-left   { grid-column: 1; grid-row: 2; }
 .landscape .rp-bottom { grid-column: 2; grid-row: 2; }
-.landscape .rplay { min-height: 50rpx; padding: 1rpx; gap: 1rpx; }
+.landscape .rplay { min-height: 50rpx; padding: 2rpx; gap: 2rpx; }
 .landscape .rplay-pile .card { margin-left: -10rpx; }
 .landscape .rplay-meta { font-size: 14rpx; }
 .landscape .rplay.win-hl .rplay-pile .card {
-  box-shadow: 0 0 0 2rpx var(--gold), 0 4rpx 12rpx rgba(212, 168, 67, .4) !important;
+  box-shadow: 0 0 0 2rpx var(--gold), 0 4rpx 14rpx rgba(212, 168, 67, .45) !important;
 }
 
-/* ── 面板 ── */
 .landscape #shout-panel {
-  top: 30rpx; padding: 10rpx 16rpx;
-  min-width: 320rpx; gap: 8rpx;
+  top: 32rpx; padding: 12rpx 18rpx; min-width: 320rpx; gap: 10rpx;
 }
 .landscape .shout-lbl { font-size: 18rpx; }
 .landscape #countdown-bar {
-  bottom: auto; top: 8rpx;
-  font-size: 18rpx; padding: 4rpx 16rpx;
+  bottom: auto; top: 10rpx; font-size: 18rpx; padding: 5rpx 18rpx;
 }
 .landscape #rev-panel {
-  bottom: auto; top: 8rpx;
-  padding: 10rpx 16rpx; gap: 8rpx;
+  bottom: auto; top: 10rpx; padding: 12rpx 18rpx; gap: 10rpx;
 }
 
-/* ── 人类信息栏 ── */
 #z-bottom-info {
   display: flex; flex-direction: row;
   align-items: center; justify-content: space-between;
-  flex-shrink: 0;
-  padding: 6rpx 20rpx;
-  overflow: visible;
+  flex-shrink: 0; padding: 8rpx 24rpx; overflow: visible;
+  border-top: 1px solid var(--b1);
+  background: rgba(8,11,18,.5);
 }
-#z-bottom-info .ptag {
-  padding: 2rpx 12rpx; gap: 6rpx;
-}
-#z-bottom-info .pn { font-size: 16rpx; }
-#z-bottom-info .ps { font-size: 14rpx; }
-#z-bottom-info .tdot { width: 8rpx; height: 8rpx; }
-#z-bottom-info .rpill { font-size: 12rpx; padding: 1rpx 6rpx; }
+#z-bottom-info .ptag   { padding: 3rpx 14rpx; gap: 6rpx; }
+#z-bottom-info .pn     { font-size: 16rpx; }
+#z-bottom-info .ps     { font-size: 14rpx; }
+#z-bottom-info .tdot   { width: 8rpx; height: 8rpx; }
+#z-bottom-info .rpill  { font-size: 12rpx; padding: 2rpx 7rpx; }
 
-/* ── 操作栏 ── */
-.landscape #action-bar {
-  padding: 0; gap: 8rpx;
-}
+.landscape #action-bar { padding: 0; gap: 10rpx; }
 .landscape #action-bar .btn {
-  padding: 6rpx 18rpx; font-size: 20rpx;
-  border-radius: 10rpx;
+  padding: 7rpx 20rpx; font-size: 20rpx; border-radius: 10rpx;
 }
 
-/* ── 手牌 ── */
 .landscape #hand-scroll {
-  flex-shrink: 1;
-  flex-basis: 130rpx;
-  min-height: 100rpx;
-  overflow: hidden;
+  flex-shrink: 1; flex-basis: 132rpx;
+  min-height: 100rpx; overflow: hidden;
 }
 .landscape #hand-bottom {
-  padding: 8rpx 16rpx;
-  align-items: flex-end;
+  padding: 8rpx 18rpx; align-items: flex-end;
 }
-.landscape #hand-bottom .card {
-  margin-left: -36rpx;
-}
-.landscape #hand-bottom .card:first-child {
-  margin-left: 0;
-}
-.landscape #hand-bottom .card.sel {
-  transform: translateY(-20rpx) !important;
-}
+.landscape #hand-bottom .card { margin-left: -36rpx; }
+.landscape #hand-bottom .card:first-child { margin-left: 0; }
+.landscape #hand-bottom .card.sel { transform: translateY(-20rpx) !important; }
 
-/* ── Toast ── */
-.landscape #toasts { top: 40rpx; }
-.landscape .toast { font-size: 20rpx; padding: 6rpx 16rpx; }
+.landscape #toasts { top: 44rpx; }
+.landscape .toast { font-size: 20rpx; padding: 7rpx 18rpx; }
 
-/* ── 结算界面 ── */
 .landscape .ebox {
-  width: 480rpx; padding: 28rpx 40rpx;
-  border-radius: 20rpx;
+  width: 490rpx; padding: 30rpx 44rpx; border-radius: 22rpx;
 }
-.landscape .eemoji { font-size: 48rpx; }
-.landscape .etitle { font-size: 28rpx; }
-.landscape .stbl th { font-size: 16rpx; padding: 6rpx; }
-.landscape .stbl td { font-size: 20rpx; padding: 8rpx 6rpx; }
-.landscape .eacts { gap: 10rpx; }
-.landscape .eacts .btn { padding: 12rpx 24rpx; font-size: 22rpx; }
+.landscape .eemoji { font-size: 52rpx; }
+.landscape .etitle { font-size: 30rpx; }
+.landscape .stbl th { font-size: 16rpx; padding: 7rpx; }
+.landscape .stbl td { font-size: 20rpx; padding: 9rpx 7rpx; }
+.landscape .eacts { gap: 12rpx; }
+.landscape .eacts .btn { padding: 13rpx 26rpx; font-size: 22rpx; }
 
-/* ── 大厅 ── */
-.landscape .lbox { padding: 32rpx 40rpx; width: 400rpx; }
-.landscape .logo .lt { font-size: 48rpx; }
+.landscape .lbox { padding: 34rpx 44rpx; width: 420rpx; }
+.landscape .logo .lt { font-size: 52rpx; }

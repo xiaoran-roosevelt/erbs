@@ -1,20 +1,37 @@
-/* 二百四 — 全局主题变量 */
+/* 二百四 — 全局主题变量（重设计版） */
 page {
-  --bg: #0c0e13;
-  --s1: #13161f;
-  --s2: #1a1e2a;
-  --s3: #252a3a;
-  --b1: rgba(255, 255, 255, .07);
-  --b2: rgba(255, 255, 255, .14);
-  --blue: #5b9bd5;
-  --blue2: #3a7abf;
-  --red: #e05a5a;
-  --gold: #d4a843;
-  --gold2: #a07828;
-  --green: #52c27a;
-  --t1: #edf0f7;
-  --t2: #8a91a8;
-  --t3: #3a3f55;
+  --bg:   #080b12;
+  --bg2:  #0d1020;
+  --s1:   #111525;
+  --s2:   #181d30;
+  --s3:   #1f2640;
+  --s4:   #252d4a;
+
+  --b1: rgba(255, 255, 255, .06);
+  --b2: rgba(255, 255, 255, .12);
+  --b3: rgba(255, 255, 255, .22);
+
+  --blue:       #4f8fce;
+  --blue2:      #2d6aad;
+  --blue-glow:  rgba(79, 143, 206, .35);
+
+  --gold:       #d4a843;
+  --gold2:      #a07828;
+  --gold3:      #ffe8a0;
+  --gold-glow:  rgba(212, 168, 67, .40);
+
+  --red:    #e05a5a;
+  --green:  #4ec87a;
+  --purple: #9b7de8;
+
+  --t1: #eef1fa;
+  --t2: #7f89a8;
+  --t3: #3d4460;
+
+  --felt:       #0e2117;
+  --felt-light: #142b1f;
+  --felt-edge:  rgba(46, 120, 60, .25);
+
   background: var(--bg);
   color: var(--t1);
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -24,5 +41,4 @@ page {
   -webkit-user-select: none;
 }
 
-/* 通用工具 */
 .hide { display: none !important; }
